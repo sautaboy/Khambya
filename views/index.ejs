@@ -1,11 +1,530 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
-  <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
-  </body>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="/stylesheets/style.css">
+
+</head>
+
+<body>
+
+
+  <%- include('nav') %>
+    <main>
+      <!-- HERO SECTION -->
+      <section id="first">
+        <div class="bubbles">
+          <div class="small bubble"></div>
+          <div class="bubble big"></div>
+        </div>
+        <div class="small bubble next"></div>
+
+        <img src="/images/khambya.png" alt="" class="khambya-big-photo">
+        <div class="hero">
+          <div class="left">
+            <h1>Hi,</h1>
+            <h1>
+              I'm <span class="color-khambya">Khambya</span>
+            </h1>
+            <h1>
+              aka Ankit Gautam
+            </h1>
+            <p class="hide-on-web">
+              Hello everyone, I am a Bachelo student and curently apllying for USA for my further Study.
+              And Now i am Studying Bachelor oc Computer Application (BCA)
+            </p>
+          </div>
+          <div class="right">
+            <h3 class="hello-everyone">Hello Everyone,</h3>
+            <h2>I am Bachelor Student,</h2>
+            <h2>Currently Applying For United States.</h2>
+            <p>
+              Hello everyone,
+
+              I am currently an undergraduate student embarking on an exciting journey to further my education in the
+              United States.
+              <br>I
+              am in the process of applying for a student visa, which is a crucial step towards achieving my academic
+              and career
+              goals.
+            </p>
+          </div>
+        </div>
+        <div class="bottom">
+          <div class="social-links">
+            <a href="https://www.facebook.com/khambya19" target="_blank">
+              <i class="ri-facebook-line"></i>
+            </a>
+            <a href="https://www.tiktok.com/khambya19" target="_blank">
+              <i class="ri-tiktok-fill"></i>
+            </a>
+            <a href="https://www.instagram.com/khambya19" target="_blank">
+              <i class="ri-instagram-line"></i>
+            </a>
+            <a href="https://www.snapchat.com/khambya19" target="_blank">
+              <i class=" ri-snapchat-line"></i>
+            </a>
+            <a href="https://www.x.com/khambya19" target="_blank">
+              <i class="ri-twitter-x-line"></i>
+            </a>
+          </div>
+          <div class="send-message">
+            <form action="/getForm" method="post">
+              <i class="ri-close-circle-line form close-message-button"></i>
+              <input type="text" name="name" placeholder="Your name">
+              <textarea name="message" placeholder="Write your message..."></textarea>
+              <button>
+                Send Message
+                <i class="ri-send-plane-line"></i>
+              </button>
+            </form>
+
+            <button class="send-message-button">
+              Send Message
+              <i class="ri-chat-1-line"></i>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- GALLERY SECTION -->
+      <section id="third">
+
+        <h1 class="welcome">Welcome to my <span class="color-title">GALLERY</span> Section</h1>
+        <div class="gallery-container">
+          <% formattedBlogs.forEach(gallery=> { %>
+            <div class="gallery" data-id="<%= gallery._id %>">
+              <% if (isAuthenticated) { %>
+                <i class="ri-delete-bin-line delete-button"
+                  style="position: absolute; z-index:10; right: 10px; top: 10px; font-size: 20px; padding: 5px; background: #fff; border-radius: 5px; color: red;"
+                  onclick="confirmDelete('<%= gallery._id %>')"></i>
+                <% } %>
+                  <% if (gallery.images.length + gallery.videos.length> 1) { %>
+                    <div class="stack1 stack" style="display: block;"></div>
+                    <div class="stack2 stack" style="display: block;"></div>
+                    <% } else { %>
+                      <div class="stack1 stack" style="display: none;"></div>
+                      <div class="stack2 stack" style="display: none;"></div>
+                      <% } %>
+                        <a href="/gallery/<%=gallery._id%>" class="have-id">
+                        </a>
+                        <% gallery.videos.forEach(video=> { %>
+                          <video src="<%= video.videoUrl %>" alt="<%= video.originalFilename %>"></video>
+                          <% }); %>
+                            <% gallery.images.forEach(image=> { %>
+                              <img src="<%= image.imageUrl %>" alt="<%= image.originalFilename %>" width="300">
+                              <% }); %>
+                                <div class="gallery-info">
+                                  <% let titleWords=gallery.title.split(' ');
+                                    let displayedTitle = titleWords.slice(0, 5).join(' ');
+                                    if (titleWords.length > 5) displayedTitle += ' ...'; %>
+                                    <h1><%- displayedTitle %></h1>
+
+                                    <time datetime="<%= new Date(gallery.createdAt).toISOString() %>">
+                                      <%= gallery.formattedDate %>
+                                    </time>
+                                    <p>
+                                      <% let paragraphWords=gallery.paragraph.split(' ');
+                                let displayedParagraph = paragraphWords.slice(0, 15).join(' ');
+                                if (paragraphWords.length > 15) displayedParagraph += ' ...'; %>
+                                        <%= displayedParagraph %>
+                                    </p>
+                                </div>
+            </div>
+            <% }); %>
+
+        </div>
+        </div>
+        </div>
+      </section>
+
+      <!-- VLOG SECTION -->
+      <section id="third">
+        <h1 class="welcome">Welcome to my <span class="color-title">VLOG</span> Section</h1>
+        <div class="vlog-container">
+          <% formattedVlogs.forEach(vlog=> { %>
+            <div class="vlog" data-id="<%=vlog._id%>">
+              <% if (isAuthenticated) { %>
+                <i class="ri-delete-bin-line delete-button"
+                  style="position: absolute; z-index:10; right: 10px; top: 10px; font-size: 20px; padding: 5px; background: #fff; border-radius: 5px; color: red;"
+                  onclick="confirmDeleteVlog('<%= vlog._id %>')"></i>
+                <% } %>
+
+                  <a href="/vlog/<%=vlog._id%>" class="have-id"></a>
+                  <div class="video">
+                    <% vlog.videos.forEach(video=> { %>
+                      <% if ( vlog.videos.length> 1) { %>
+                        <div class="stack1 stack" style="display: block;"></div>
+                        <div class="stack2 stack" style="display: block;"></div>
+                        <% } else { %>
+                          <div class="stack1 stack" style="display: none;"></div>
+                          <div class="stack2 stack" style="display: none;"></div>
+                          <% } %>
+
+                            <video src="<%= video.videoUrl %>" alt="<%= video.originalFilename %>"></video>
+                            <% }); %>
+                  </div>
+                  <div class="vlog-info">
+                    <h1>
+                      <% let titleWords=vlog.title.split(' ');
+                let displayedTitle = titleWords.slice(0, 5).join(' ');
+                if (titleWords.length > 5) displayedTitle += ' ...'; %>
+                        <%= displayedTitle %>
+                    </h1>
+
+                    <time datetime="<%= new Date(vlog.createdAt).toISOString() %>">
+                      <%= vlog.formattedDate %>
+                    </time>
+
+                    <p>
+                      <% let paragraphWords=vlog.paragraph.split(' ');
+                   let displayedParagraph = paragraphWords.slice(0, 15).join(' ');
+                   if (paragraphWords.length > 15) displayedParagraph += ' ...'; %>
+                        <%= displayedParagraph %>
+                    </p>
+
+                  </div>
+            </div>
+            <% }); %>
+
+        </div>
+      </section>
+
+
+      <section id="playlist">
+        <h1 class="welcome">Welcome to my <span class="color-title">MUSIC </span> playlist Section</h1>
+        <div class="vlog-container">
+
+
+
+          <!-- sleep music playlist -->
+          <div class="vlog">
+            <a href="https://youtube.com/playlist?list=PLaD_yc3WE9ScxyU2ffAiVD2L1QezFVGhR&si=8xDnRQKw1YUl7M7I"
+              class="have-id" target="_blank"></a>
+            <div class="video">
+              <div class="stack1 stack" style="display: block;">
+                <img src="https://i.ytimg.com/vi_webp/TFTdwTUFLQw/sddefault.webp" alt="">
+              </div>
+              <div class="stack2 stack" style="display: block;">
+                <img src="https://i.ytimg.com/vi_webp/09Tc5QIJyhs/sddefault.webp" alt="">
+              </div>
+              <div class="stack3 stack" style="display: block;">
+                <img
+                  src="https://i.ytimg.com/vi/vzSSS2Fqv-o/hq720.jpg?sqp=-oaymwEXCK4FEIIDSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLDvHgdniJxKdURbKMDE--g0L7cz9g"
+                  alt="">
+              </div>
+            </div>
+            <div class="vlog-info">
+              <h1>
+                Sleep 😴
+              </h1>
+              <p>
+                I used to listen these , while sleeping.
+              </p>
+            </div>
+          </div>
+
+          <!-- Neplai Playlist -->
+          <div class="vlog">
+            <a href="https://youtube.com/playlist?list=PLaD_yc3WE9Sfr1RzCY5keSYpL_WtNyzoE&si=xjC_dx6lLnYRM6GW"
+              class="have-id" target="_blank"></a>
+            <div class="video">
+              <div class="stack1 stack" style="display: block;">
+                <img src="https://i.ytimg.com/vi/50izz7vu7cI/sddefault.jpg" alt="">
+              </div>
+              <div class="stack2 stack" style="display: block;">
+                <img src="https://i.ytimg.com/vi/Gx799JY7Edk/sddefault.jpg" alt="">
+              </div>
+              <div class="stack3 stack" style="display: block;">
+                <img src="https://i.ytimg.com/vi/50izz7vu7cI/sddefault.jpg" alt="">
+              </div>
+            </div>
+            <div class="vlog-info">
+              <h1>
+                Nepali 🇳🇵
+              </h1>
+              <p>
+                I used yo Listen this , when i feel proud.
+              </p>
+            </div>
+          </div>
+
+
+          <!-- Favoutei playlist -->
+          <div class="vlog">
+            <a href="https://youtube.com/playlist?list=PLaD_yc3WE9Scc8WpTt0e2S6GHpFUNno7t&si=4H0ouZh0iiR2x4VH"
+              class="have-id" target="_blank"></a>
+            <div class="video">
+              <div class="stack1 stack" style="display: block;">
+                <img src="https://i.ytimg.com/vi_webp/tqO8HrUIU9c/sddefault.webp" alt="">
+              </div>
+              <div class="stack2 stack" style="display: block;">
+                <img src="https://i.ytimg.com/vi_webp/L_11_TqiTFw/sddefault.webp" alt="">
+              </div>
+              <div class="stack3 stack" style="display: block;">
+                <img src="https://i.ytimg.com/vi_webp/tqO8HrUIU9c/sddefault.webp" alt="">
+              </div>
+            </div>
+            <div class="vlog-info">
+              <h1>
+                Favroute ❤️
+              </h1>
+              <p>
+                This is my favroute Songs.
+              </p>
+            </div>
+          </div>
+
+
+
+
+
+        </div>
+      </section>
+
+      <!-- ONLY ADMIN CAN SEE THIS  -->
+      <!-- UPLOAD PHOTO /VIDEO  FOR GALLERY SECTION -->
+      <% if (isAuthenticated) { %>
+        <section id="fourth">
+          <h1 class="welcome">Upload your <span class="color-title">VIDEOS / IMAGES</span> from here</h1>
+          <div class="form-container">
+            <form action="/api/galleryPost" method="post" enctype="multipart/form-data">
+              <label for="title">Title</label>
+              <input type="text" class="title" name="title" required>
+              <label for="paragraph">Paragraph</label>
+              <textarea class="paragraph" name="paragraph" required></textarea>
+              <div style="display: flex; align-items: center; gap: 2rem; background: #111; overflow: scroll;">
+                <label for="file" class="custum-file-upload">
+                  <div class="icon">
+                    <svg viewBox="0 0 24 24" fill="" xmlns="http://www.w3.org/2000/svg">
+                      <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                      <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                      <g id="SVGRepo_iconCarrier">
+                        <path fill-rule="evenodd" clip-rule="evenodd"
+                          d="M10 1C9.73478 1 9.48043 1.10536 9.29289 1.29289L3.29289 7.29289C3.10536 7.48043 3 7.73478 3 8V20C3 21.6569 4.34315 23 6 23H7C7.55228 23 8 22.5523 8 22C8 21.4477 7.55228 21 7 21H6C5.44772 21 5 20.5523 5 20V9H10C10.5523 9 11 8.55228 11 8V3H18C18.5523 3 19 3.44772 19 4V9C19 9.55228 19.4477 10 20 10C20.5523 10 21 9.55228 21 9V4C21 2.34315 19.6569 1 18 1H10ZM9 7H6.41421L9 4.41421V7ZM14 15.5C14 14.1193 15.1193 13 16.5 13C17.8807 13 19 14.1193 19 15.5V16V17H20C21.1046 17 22 17.8954 22 19C22 20.1046 21.1046 21 20 21H13C11.8954 21 11 20.1046 11 19C11 17.8954 11.8954 17 13 17H14V16V15.5ZM16.5 11C14.142 11 12.2076 12.8136 12.0156 15.122C10.2825 15.5606 9 17.1305 9 19C9 21.2091 10.7909 23 13 23H20C22.2091 23 24 21.2091 24 19C24 17.1305 22.7175 15.5606 20.9844 15.122C20.7924 12.8136 18.858 11 16.5 11Z"
+                          fill=""></path>
+                      </g>
+                    </svg>
+                  </div>
+                  <br>
+                  <div class="text">
+                    <span>Click to upload image</span>
+                  </div>
+                  <input type="file" id="galleryImageFile" accept=".jpeg, .jpg, .png" name="galleryImages" multiple>
+                </label>
+
+                <!--FOR VIDEO  -->
+                <label for="file" class="custum-file-upload">
+                  <div class="icon">
+                    <svg viewBox="0 0 24 24" fill="" xmlns="http://www.w3.org/2000/svg">
+                      <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                      <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                      <g id="SVGRepo_iconCarrier">
+                        <path fill-rule="evenodd" clip-rule="evenodd"
+                          d="M10 1C9.73478 1 9.48043 1.10536 9.29289 1.29289L3.29289 7.29289C3.10536 7.48043 3 7.73478 3 8V20C3 21.6569 4.34315 23 6 23H7C7.55228 23 8 22.5523 8 22C8 21.4477 7.55228 21 7 21H6C5.44772 21 5 20.5523 5 20V9H10C10.5523 9 11 8.55228 11 8V3H18C18.5523 3 19 3.44772 19 4V9C19 9.55228 19.4477 10 20 10C20.5523 10 21 9.55228 21 9V4C21 2.34315 19.6569 1 18 1H10ZM9 7H6.41421L9 4.41421V7ZM14 15.5C14 14.1193 15.1193 13 16.5 13C17.8807 13 19 14.1193 19 15.5V16V17H20C21.1046 17 22 17.8954 22 19C22 20.1046 21.1046 21 20 21H13C11.8954 21 11 20.1046 11 19C11 17.8954 11.8954 17 13 17H14V16V15.5ZM16.5 11C14.142 11 12.2076 12.8136 12.0156 15.122C10.2825 15.5606 9 17.1305 9 19C9 21.2091 10.7909 23 13 23H20C22.2091 23 24 21.2091 24 19C24 17.1305 22.7175 15.5606 20.9844 15.122C20.7924 12.8136 18.858 11 16.5 11Z"
+                          fill=""></path>
+                      </g>
+                    </svg>
+                  </div>
+                  <br>
+                  <div class="text">
+                    <span>Click to upload Video</span>
+                  </div>
+                  <input type="file" id="galleryVideoFile" accept=".mp4, .avi,  and .mkv " name="galleryVideos"
+                    multiple>
+                </label>
+
+              </div>
+              <div class="video-preview-container" id="galleryImagePreviewContainer"></div><br>
+              <div class="gallery-preview-container" id="galleryPreviewContainer"></div>
+              <br>
+              <button type="submit">Submit</button>
+            </form>
+          </div>
+
+        </section>
+        <% } %>
+
+          <!-- ONLY ADMIN CAN SEE THIS -->
+          <!-- UPLOAD VLOG FORM HERE -->
+          <% if (isAuthenticated) { %>
+            <section id="fifth">
+              <h1 class="welcome">Upload your <span class="color-title">VLOG VIDEO</span> from here</h1>
+              <div class="form-container">
+                <form action="/api/vlogPost" method="post" enctype="multipart/form-data">
+                  <label for="title">Title</label>
+                  <input type="text" class="title" name="title" required>
+                  <label for="paragraph">Paragraph</label>
+                  <textarea class="paragraph" name="paragraph" required></textarea>
+                  <div style="display: flex; align-items: center; gap: 2rem;">
+                    <!--FOR VIDEO  -->
+                    <label for="file" class="custum-file-upload">
+                      <div class="icon">
+                        <svg viewBox="0 0 24 24" fill="" xmlns="http://www.w3.org/2000/svg">
+                          <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                          <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                          <g id="SVGRepo_iconCarrier">
+                            <path fill-rule="evenodd" clip-rule="evenodd"
+                              d="M10 1C9.73478 1 9.48043 1.10536 9.29289 1.29289L3.29289 7.29289C3.10536 7.48043 3 7.73478 3 8V20C3 21.6569 4.34315 23 6 23H7C7.55228 23 8 22.5523 8 22C8 21.4477 7.55228 21 7 21H6C5.44772 21 5 20.5523 5 20V9H10C10.5523 9 11 8.55228 11 8V3H18C18.5523 3 19 3.44772 19 4V9C19 9.55228 19.4477 10 20 10C20.5523 10 21 9.55228 21 9V4C21 2.34315 19.6569 1 18 1H10ZM9 7H6.41421L9 4.41421V7ZM14 15.5C14 14.1193 15.1193 13 16.5 13C17.8807 13 19 14.1193 19 15.5V16V17H20C21.1046 17 22 17.8954 22 19C22 20.1046 21.1046 21 20 21H13C11.8954 21 11 20.1046 11 19C11 17.8954 11.8954 17 13 17H14V16V15.5ZM16.5 11C14.142 11 12.2076 12.8136 12.0156 15.122C10.2825 15.5606 9 17.1305 9 19C9 21.2091 10.7909 23 13 23H20C22.2091 23 24 21.2091 24 19C24 17.1305 22.7175 15.5606 20.9844 15.122C20.7924 12.8136 18.858 11 16.5 11Z"
+                              fill=""></path>
+                          </g>
+                        </svg>
+                      </div>
+                      <br>
+                      <div class="text">
+                        <span>Click to upload Video</span>
+                      </div>
+                      <input type="file" id="file" accept=".mp4, .avi,  and .mkv " name="vlogVideos" multiple>
+                    </label>
+                  </div>
+                  <div class="video-preview-container" id="videoPreviewContainer"></div>
+                  <br>
+                  <button type="submit">Submit</button>
+                </form>
+
+              </div>
+            </section>
+            <% } %>
+
+
+
+              <!-- ADMIN PANEL -->
+              <!-- ADMIN CAN ONLY SEE -->
+              <% if (isAuthenticated) { %>
+                <section id="sixth">
+                  <h1 class="welcome">Welcome to <span class="color-title">ADMIN</span> panel,
+                    Change your <span class="color-title">Username</span> & <span class="color-title">Password</span>
+                  </h1>
+                  <form action="/admin-update" class="admin-panel" method="post">
+                    <input type="text" name="username" id="" placeholder="Enter Username">
+                    <input type="password" name="password" placeholder="Enter Password">
+                    <input type="submit" value="Update">
+                  </form>
+
+                  <form action="/logout" method="post">
+                    <button>Logout</button>
+                  </form>
+
+                </section>
+                <% } %>
+
+    </main>
+
+
+    <script defer>
+      document.querySelector(".send-message-button").addEventListener("click", (e) => {
+        document.querySelector(".send-message form").classList.toggle("open");
+        document.querySelector(".send-message-button").classList.add("open");
+        document.querySelector(".send-message-button").style.opacity = ".1";
+        document.querySelector(".send-message-button").setAttribute("disabled", "true");
+      });
+
+      document.querySelector(".close-message-button").addEventListener("click", () => {
+        document.querySelector(".send-message form").classList.remove("open");
+        document.querySelector(".send-message-button").classList.remove("open");
+        document.querySelector(".send-message-button").style.opacity = "1";
+        document.querySelector(".send-message-button").removeAttribute("disabled");
+      });
+    </script>
+
+    <script defer>
+      document.querySelector(".khambya-big-photo").addEventListener("dblclick", (e) => {
+
+        document.querySelector(".khambya-big-photo").classList.add("glow");
+        setTimeout(() => {
+          document.querySelector(".khambya-big-photo").classList.remove("glow");
+
+
+        }, 300)
+      })
+
+      document.querySelector(".khambya-big-photo").addEventListener("mouseenter", (e) => {
+        document.querySelector(".khambya-big-photo").classList.add("zoom")
+      })
+      document.querySelector(".khambya-big-photo").addEventListener("mouseleave", (e) => {
+        document.querySelector(".khambya-big-photo").classList.remove("zoom")
+      })
+    </script>
+
+
+
+    <script defer>
+      function previewFiles(inputId, previewContainerId, elementType) {
+        document.getElementById(inputId).addEventListener('change', function (event) {
+          const files = event.target.files;
+          const previewContainer = document.getElementById(previewContainerId);
+          previewContainer.innerHTML = ''; // Clear previous previews
+
+          for (const file of files) {
+            const fileURL = URL.createObjectURL(file);
+            const previewElement = document.createElement(elementType);
+            previewElement.src = fileURL;
+            previewElement.controls = elementType === 'video';
+            previewElement.className = 'video-preview';
+
+            previewContainer.appendChild(previewElement);
+          }
+        });
+      }
+
+      previewFiles('file', 'videoPreviewContainer', 'video');
+      previewFiles('galleryVideoFile', 'galleryPreviewContainer', 'video');
+      previewFiles('galleryImageFile', 'galleryImagePreviewContainer', 'img');
+    </script>
+
+
+
+    <!-- DELETING GALLERY -->
+    <script defer>
+      function confirmDelete(galleryId) {
+        if (confirm('Are you sure you want to delete this item?')) {
+          // Send a request to the server to delete the gallery item
+          fetch(`/api/deleteGallery/${galleryId}`, {
+            method: 'DELETE'
+          })
+            .then(response => {
+              if (response.ok) {
+                // Remove the gallery item from the DOM
+                document.querySelector(`.gallery[data-id='${galleryId}']`).remove();
+              } else {
+                alert('Error deleting the item. Please try again.');
+              }
+            })
+            .catch(error => {
+              console.error('Error:', error);
+              alert('Error deleting the item. Please try again.');
+            });
+        }
+      }
+    </script>
+
+    <!-- DELETING VLOG -->
+    <script defer>
+      function confirmDeleteVlog(vlogId) {
+        if (confirm('Are you sure you want to delete this item?')) {
+          // Send a request to the server to delete the gallery item
+          fetch(`/api/deleteVlog/${vlogId}`, {
+            method: 'DELETE'
+          })
+            .then(response => {
+              if (response.ok) {
+                // Remove the gallery item from the DOM
+                document.querySelector(`.vlog[data-id='${vlogId}']`).remove();
+              } else {
+                alert('Error deleting the item. Please try again.');
+              }
+            })
+            .catch(error => {
+              console.error('Error:', error);
+              alert('Error deleting the item. Please try again.');
+            });
+        }
+      }
+    </script>
+
+</body>
+
 </html>

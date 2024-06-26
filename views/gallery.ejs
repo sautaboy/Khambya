@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        Title
+    </title>
+    <link rel="stylesheet" href="/stylesheets/style.css" media="print" onload="this.media='all'">
+
+</head>
+<style>
+    main {
+        min-height: fit-content;
+    }
+    
+
+    .gallery-photos-video-container {
+        display: flex;
+        width: 100%;
+        gap: 10px;
+        min-height: fit-content;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        align-items: flex-start;
+        padding: 3rem 0;
+        margin-top: 4rem;
+    }
+
+
+    .gallery-photos-video-container video:hover {
+        cursor: pointer;
+        opacity: .9;
+    }
+
+    .gallery-photos-video-container img:hover {
+        opacity: .8;
+    }
+
+    .gallery-photos-video-container img,
+    .gallery-photos-video-container video {
+        height: 100%;
+        object-fit: cover;
+        border-radius: 10px;
+        cursor: pointer;
+    }
+
+    .gallery-photos-video-container .video,
+    .gallery-photos-video-container .image {
+        width: calc(100% / 4 - 10px);
+        border-radius: 10px;
+        overflow: hidden;
+        height: 300px;
+        padding: 10px;
+    }
+
+    .gallery-photos-video-container-info {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        border-radius: 10px;
+        padding: 10px;
+        width: fit-content;
+    }
+
+    .gallery-photos-video-container-info h1 {
+        font-size: 4vw;
+    }
+
+    .gallery-photos-video-container-info p {
+        line-height: 25px;
+        letter-spacing: 1px;
+
+        font-size: 18px;
+    }
+
+    /* * Styles for overlay and navigation */
+    .overlay {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 90%;
+        height: 90%;
+        background: rgba(0, 0, 0, 0.8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .overlay-content {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .overlay-inner-content {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .overlay video,
+    .overlay img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+        border-radius: 10px;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    .overlay .close {
+        position: absolute;
+        top: 10px;
+        right: 20px;
+        font-size: 2rem;
+        color: white;
+        cursor: pointer;
+        z-index: 9;
+        transition: .3s ease-in-out;
+    }
+
+    .overlay .close:hover {
+        color: hsl(348, 60%, 40%);
+    }
+
+    .overlay-nav {
+        position: absolute;
+        top: 50%;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        transform: translateY(-50%);
+    }
+
+    .nav-btn {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 30px;
+        cursor: pointer;
+        padding: 10px;
+    }
+
+    .nav-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+    }
+
+    @media (max-width: 768px) {
+        .gallery-photos-video-container {
+            flex-direction: column;
+            margin-top: 4rem;
+            padding: 0;
+        }
+
+        .gallery-photos-video-container .video,
+        .gallery-photos-video-container .image {
+            width: 100%;
+        }
+
+        .overlay {
+            display: none;
+        }
+
+        .gallery-photos-video-container-info h1 {
+            font-size: 4vh;
+        }
+
+
+    }
+</style>
+
+<body>
+    <%- include('nav') %>
+        <main>
+            <div class="gallery-photos-video-container">
+                <% if (blog.videos && blog.videos.length> 0) { %>
+                    <% blog.videos.forEach(function(video, index) { %>
+                        <div class="video" data-index="<%= index %>" data-type="video">
+                            <video src="<%= video.videoUrl %>" muted></video>
+                        </div>
+                        <% }); %>
+                            <% } %>
+
+                                <% if (blog.images && blog.images.length> 0) { %>
+                                    <% blog.images.forEach(function(image, index) { %>
+                                        <div class="image" data-index="<%= index %>" data-type="image">
+                                            <img src="<%= image.imageUrl %>" alt="<%= image.originalFilename %>">
+                                        </div>
+                                        <% }); %>
+                                            <% } %>
+            </div>
+
+            <div id="overlay" class="overlay hidden">
+                <div class="overlay-content">
+                    <span class="close">&times;</span>
+                    <div class="overlay-inner-content">
+                        <video id="overlay-video" class="hidden" controls></video>
+                        <img id="overlay-image" class="hidden">
+                    </div>
+                    <div class="overlay-nav">
+                        <button id="prev-btn" class="nav-btn">&lt;</button>
+                        <button id="next-btn" class="nav-btn">&gt;</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="gallery-photos-video-container-info">
+                <h1>
+                    <%= blog.title %>
+                </h1>
+                <time datetime="<%= new Date(blog.createdAt).toISOString() %>">
+                    <%= blog.formattedDate %>
+                </time>
+                <p>
+                    <%= blog.paragraph %>
+                </p>
+            </div>
+        </main>
+        <script defer>
+            document.addEventListener('DOMContentLoaded', () => {
+                const overlay = document.getElementById('overlay');
+                const overlayVideo = document.getElementById('overlay-video');
+                const overlayImage = document.getElementById('overlay-image');
+                const closeBtn = document.querySelector('.overlay .close');
+                const prevBtn = document.getElementById('prev-btn');
+                const nextBtn = document.getElementById('next-btn');
+
+                let currentIndex = -1;
+                let items = [];
+
+                const galleryItems = document.querySelectorAll('.gallery-photos-video-container .video, .gallery-photos-video-container .image');
+
+                galleryItems.forEach((item, index) => {
+                    items.push({
+                        type: item.querySelector('video') ? 'video' : 'image',
+                        url: item.querySelector('video') ? item.querySelector('video').src : item.querySelector('img').src
+                    });
+
+                    item.addEventListener('click', () => {
+                        currentIndex = index;
+                        showOverlay(currentIndex);
+                    });
+
+                    if (item.dataset.type === 'video') {
+                        const video = item.querySelector('video');
+                        video.addEventListener('mouseover', () => video.play());
+                        video.addEventListener('mouseout', () => video.pause());
+                    }
+                });
+
+                const showOverlay = (index) => {
+                    if (index >= 0 && index < items.length) {
+                        const item = items[index];
+                        if (item.type === 'video') {
+                            overlayVideo.src = item.url;
+                            overlayVideo.classList.remove('hidden');
+                            overlayImage.classList.add('hidden');
+                        } else {
+                            overlayImage.src = item.url;
+                            overlayImage.classList.remove('hidden');
+                            overlayVideo.classList.add('hidden');
+                        }
+                        overlay.classList.remove('hidden');
+                        document.body.classList.add('blur-background'); // Add blur
+                        setTimeout(() => overlay.style.opacity = 1, 0);
+                    }
+                };
+
+                const hideOverlay = () => {
+                    overlay.style.opacity = 0;
+                    setTimeout(() => {
+                        overlay.classList.add('hidden');
+                        document.body.classList.remove('blur-background'); // Remove blur
+                    }, 300);
+                    overlayVideo.pause();
+                };
+
+                const showNext = () => {
+                    currentIndex = (currentIndex + 1) % items.length;
+                    showOverlay(currentIndex);
+                };
+
+                const showPrev = () => {
+                    currentIndex = (currentIndex - 1 + items.length) % items.length;
+                    showOverlay(currentIndex);
+                };
+
+                closeBtn.addEventListener('click', hideOverlay);
+                nextBtn.addEventListener('click', showNext);
+                prevBtn.addEventListener('click', showPrev);
+
+                // Handle swipe events for mobile
+                let startX = 0;
+                overlay.addEventListener('touchstart', (e) => {
+                    startX = e.touches[0].clientX;
+                });
+
+                overlay.addEventListener('touchend', (e) => {
+                    const endX = e.changedTouches[0].clientX;
+                    if (startX > endX + 50) {
+                        showNext();
+                    } else if (startX < endX - 50) {
+                        showPrev();
+                    }
+                });
+
+                // Handle keyboard events
+                document.addEventListener('keydown', (e) => {
+                    if (!overlay.classList.contains('hidden')) {
+                        if (e.key === 'Escape') {
+                            hideOverlay();
+                        } else if (e.key === 'ArrowRight') {
+                            showNext();
+                        } else if (e.key === 'ArrowLeft') {
+                            showPrev();
+                        }
+                    }
+                });
+
+
+                const videoElement = document.getElementById('overlay-video');
+
+                // Function to toggle full-screen mode
+                function toggleFullScreen() {
+                    if (!document.fullscreenElement) {
+                        if (videoElement.requestFullscreen) {
+                            videoElement.requestFullscreen();
+                        } else if (videoElement.mozRequestFullScreen) { /* Firefox */
+                            videoElement.mozRequestFullScreen();
+                        } else if (videoElement.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
+                            videoElement.webkitRequestFullscreen();
+                        } else if (videoElement.msRequestFullscreen) { /* IE/Edge */
+                            videoElement.msRequestFullscreen();
+                        }
+                    } else {
+                        if (document.exitFullscreen) {
+                            document.exitFullscreen();
+                        } else if (document.mozCancelFullScreen) { /* Firefox */
+                            document.mozCancelFullScreen();
+                        } else if (document.webkitExitFullscreen) { /* Chrome, Safari and Opera */
+                            document.webkitExitFullscreen();
+                        } else if (document.msExitFullscreen) { /* IE/Edge */
+                            document.msExitFullscreen();
+                        }
+                    }
+                }
+
+                // Event listener for full-screen toggle
+                document.addEventListener('keydown', function (event) {
+                    if (event.key === 'f' || event.key === 'F') {
+                        toggleFullScreen();
+                    } else if (event.key === 'Escape') {
+                        if (document.fullscreenElement) {
+                            toggleFullScreen();
+                        }
+                    }
+                });
+
+
+
+            });
+
+
+
+        </script>
+</body>
+
+</html>

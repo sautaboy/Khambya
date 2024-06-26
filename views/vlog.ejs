@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+</head>
+
+<body>
+
+
+
+    <style>
+        main {
+            height: fit-content;
+            display: flex;
+            flex-direction: column;
+            gap: 3rem;
+        }
+
+        .videos {
+            display: flex;
+            margin-top: 10rem;
+            gap: 10px;
+        }
+
+        .videos .video {
+            width: calc(100% / 4 - 10px);
+            height: 250px;
+            cursor: pointer;
+            overflow: hidden;
+            border-radius: 10px;
+            transition: 2s ease-in-out;
+        }
+
+        .videos .video:hover {
+            opacity: .9;
+        }
+
+
+        .vlog-info {
+            width: fit-content;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .vlog-info p {
+            line-height: 25px;
+            letter-spacing: 1px;
+
+            font-size: 18px;
+        }
+
+        .vlog-info h1 {
+            font-size: 4vw;
+        }
+
+        @media (max-width: 768px) {
+            main {
+                gap: 1rem;
+            }
+
+            .videos {
+                margin-top: 5rem;
+                flex-direction: column;
+                padding: 0 10px;
+            }
+
+            .videos .video {
+                width: 100%;
+            }
+
+            .vlog-info {
+                padding: 0 10px;
+                padding-bottom: 1rem;
+            }
+
+            .vlog-info h1 {
+                font-size: 4vh;
+            }
+
+        }
+    </style>
+
+
+    <%- include('nav') %>
+
+        <main>
+
+            <div class="videos">
+                <% vlog.videos.forEach(function(video, index) { %>
+                    <div class="video">
+                        <video id="vlogVideo<%= index %>" class="vlogVideo" src="<%= video.videoUrl %>"></video>
+                    </div>
+                    <% }); %>
+            </div>
+
+            <div class="vlog-info">
+                <h1>
+                    <%= vlog.title %>
+                </h1>
+                <time datetime="<%= vlog.createdAt.toISOString() %>">
+                    <%= vlog.formattedDate %>
+                </time>
+                <p>
+                    <%= vlog.paragraph %>
+                </p>
+            </div>
+
+        </main>
+        <script defer>
+            document.addEventListener('DOMContentLoaded', () => {
+                const videos = document.querySelectorAll('.vlogVideo');
+                let currentIndex = -1;
+
+                const playVideo = (index) => {
+                    if (currentIndex !== -1 && currentIndex !== index) {
+                        videos[currentIndex].pause();
+                        videos[currentIndex].currentTime = 0;
+                    }
+                    currentIndex = index;
+                    const video = videos[index];
+                    video.muted = false;
+                    video.play();
+                    video.requestFullscreen().then(() => {
+                        video.muted = false;
+                        video.play();
+                        document.body.classList.add('blur-background'); // Add blur
+                    });
+                };
+
+                const exitFullScreen = () => {
+                    if (document.fullscreenElement) {
+                        document.exitFullscreen();
+                    }
+                    if (currentIndex !== -1) {
+                        videos[currentIndex].pause();
+                        videos[currentIndex].currentTime = 0;
+                        currentIndex = -1;
+                    }
+                    document.body.classList.remove('blur-background'); // Remove blur
+                };
+
+                const showNext = () => {
+                    if (currentIndex < videos.length - 1) {
+                        playVideo(currentIndex + 1);
+                    } else {
+                        playVideo(0);
+                    }
+                };
+
+                const showPrev = () => {
+                    if (currentIndex > 0) {
+                        playVideo(currentIndex - 1);
+                    } else {
+                        playVideo(videos.length - 1);
+                    }
+                };
+
+                videos.forEach((video, index) => {
+                    video.addEventListener('mouseover', () => {
+                        video.muted = true;
+                        video.play();
+                    });
+                    video.addEventListener('mouseout', () => {
+                        video.pause();
+                        video.currentTime = 0;
+                    });
+                    video.addEventListener('click', () => {
+                        playVideo(index);
+                    });
+                });
+
+                document.addEventListener('keydown', (e) => {
+                    if (!document.fullscreenElement) return;
+                    switch (e.key) {
+                        case 'Escape':
+                            exitFullScreen();
+                            break;
+                        case 'ArrowRight':
+                            showNext();
+                            break;
+                        case 'ArrowLeft':
+                            showPrev();
+                            break;
+                        case 'f':
+                            if (currentIndex !== -1) {
+                                videos[currentIndex].requestFullscreen();
+                            }
+                            break;
+                    }
+                });
+            });
+        </script>
+
+
+</body>
+
+</html>
