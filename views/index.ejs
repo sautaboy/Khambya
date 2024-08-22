@@ -92,7 +92,6 @@
 
       <!-- GALLERY SECTION -->
       <section id="third">
-
         <h1 class="welcome">Welcome to my <span class="color-title">GALLERY</span> Section</h1>
         <div class="gallery-container">
           <% formattedBlogs.forEach(gallery=> { %>
@@ -121,6 +120,7 @@
                                   <% let titleWords=gallery.title.split(' ');
                                     let displayedTitle = titleWords.slice(0, 5).join(' ');
                                     if (titleWords.length > 5) displayedTitle += ' ...'; %>
+                                    
                                     <h1><%- displayedTitle %></h1>
 
                                     <time datetime="<%= new Date(gallery.createdAt).toISOString() %>">
