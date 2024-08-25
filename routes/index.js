@@ -407,59 +407,59 @@ router.post('/api/galleryPost', (req, res) => {
 
 
 
-// / Set up multer for file uploads
-const vlogStorage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, './public/uploads');
-  },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, uniqueSuffix + '-' + file.originalname);
-  }
-});
+// // / Set up multer for file uploads
+// const vlogStorage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     cb(null, './public/uploads');
+//   },
+//   filename: function (req, file, cb) {
+//     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+//     cb(null, uniqueSuffix + '-' + file.originalname);
+//   }
+// });
 
-// Define file filter function
-const vlogFileFilter = (req, file, cb) => {
-  const videoTypes = /mp4|avi|mkv/;
-  const extname = videoTypes.test(path.extname(file.originalname).toLowerCase());
-  const mimetype = videoTypes.test(file.mimetype);
-  if (mimetype && extname) {
-    cb(null, true);
-  } else {
-    cb(new Error('Only .mp4, .avi, and .mkv files are allowed!'));
-  }
-};
+// // Define file filter function
+// const vlogFileFilter = (req, file, cb) => {
+//   const videoTypes = /mp4|avi|mkv/;
+//   const extname = videoTypes.test(path.extname(file.originalname).toLowerCase());
+//   const mimetype = videoTypes.test(file.mimetype);
+//   if (mimetype && extname) {
+//     cb(null, true);
+//   } else {
+//     cb(new Error('Only .mp4, .avi, and .mkv files are allowed!'));
+//   }
+// };
 
-// Configure multer
-const vlogVideoUpload = multer({
-  storage: vlogStorage,
-  fileFilter: vlogFileFilter
-}).array('vlogVideos', 5); //
+// // Configure multer
+// const vlogVideoUpload = multer({
+//   storage: vlogStorage,
+//   fileFilter: vlogFileFilter
+// }).array('vlogVideos', 5); //
 
-// Handle POST request for uploading vlog items
-router.post('/api/vlogPost', (req, res) => {
-  vlogVideoUpload(req, res, async (err) => {
-    if (err) {
-      return res.status(400).send(`Error: ${err.message}`);
-    }
-    const vlogVideos = req.files;
-    const videoDocuments = vlogVideos.map(video => ({
-      videoUrl: `/uploads/${video.filename}`,
-      originalFilename: video.originalname
-    }));
-    const newVlog = new Vlog({
-      title: req.body.title,
-      paragraph: req.body.paragraph,
-      videos: videoDocuments
-    });
-    try {
-      await newVlog.save();
-      res.redirect('back');
-    } catch (error) {
-      res.status(500).send(`Error saving to database: ${error.message}`);
-    }
-  });
-});
+// // Handle POST request for uploading vlog items
+// router.post('/api/vlogPost', (req, res) => {
+//   vlogVideoUpload(req, res, async (err) => {
+//     if (err) {
+//       return res.status(400).send(`Error: ${err.message}`);
+//     }
+//     const vlogVideos = req.files;
+//     const videoDocuments = vlogVideos.map(video => ({
+//       videoUrl: `/uploads/${video.filename}`,
+//       originalFilename: video.originalname
+//     }));
+//     const newVlog = new Vlog({
+//       title: req.body.title,
+//       paragraph: req.body.paragraph,
+//       videos: videoDocuments
+//     });
+//     try {
+//       await newVlog.save();
+//       res.redirect('back');
+//     } catch (error) {
+//       res.status(500).send(`Error saving to database: ${error.message}`);
+//     }
+//   });
+// });
 
 
 // HOME PAGE

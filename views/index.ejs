@@ -21,7 +21,6 @@
           <div class="bubble big"></div>
         </div>
         <div class="small bubble next"></div>
-
         <img src="/images/khambya.png" alt="" class="khambya-big-photo">
         <div class="hero">
           <div class="left">
@@ -120,7 +119,7 @@
                                   <% let titleWords=gallery.title.split(' ');
                                     let displayedTitle = titleWords.slice(0, 5).join(' ');
                                     if (titleWords.length > 5) displayedTitle += ' ...'; %>
-                                    
+
                                     <h1><%- displayedTitle %></h1>
 
                                     <time datetime="<%= new Date(gallery.createdAt).toISOString() %>">
@@ -142,7 +141,7 @@
       </section>
 
       <!-- VLOG SECTION -->
-      <section id="third">
+      <!-- <section id="third">
         <h1 class="welcome">Welcome to my <span class="color-title">VLOG</span> Section</h1>
         <div class="vlog-container">
           <% formattedVlogs.forEach(vlog=> { %>
@@ -191,7 +190,7 @@
             <% }); %>
 
         </div>
-      </section>
+      </section> -->
 
 
       <section id="playlist">
